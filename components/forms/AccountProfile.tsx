@@ -20,6 +20,9 @@ import Image from "next/image";
 import {Textarea} from "@/components/ui/textarea";
 import {isBase64Image} from "@/lib/utils";
 import {useUploadThing} from '@/lib/uploadthing'
+import {updateUser} from "@/lib/actions/user.actions";
+import {usePathname,useRouter} from "next/navigation";
+
 
 interface IAccountProfileProps{
     user:{
@@ -35,6 +38,10 @@ interface IAccountProfileProps{
 const AccountProfile = ({user,btnTitle}:IAccountProfileProps) => {
     const [files, setFiles] = useState<File[]>([]);
     const {startUpload} = useUploadThing('media')// name from app/api/../core     media: f({ image: { maxFileSize: "4MB", maxFileCount:1 } })
+    const router = useRouter()
+    const pathname = usePathname()
+    console.log(pathname)
+    console.log(router)
     const form = useForm({
         resolver: zodResolver(UserValidation),
         defaultValues:{
@@ -67,8 +74,21 @@ const AccountProfile = ({user,btnTitle}:IAccountProfileProps) => {
                 values.profile_photo = imgRes[0].fileUrl
             }
         }
-       console.log(values)
-    //  TODO : update user profile
+        await  updateUser(
+            {
+                userId:user.id,
+                username:values.username,
+                name:values.name,
+                bio:values.bio,
+                image:values.profile_photo,
+                path:pathname
+            }
+        )   //  TODO : update user profile
+        if(pathname==='profile/edit'){
+            router.back()
+        }else{
+            router.push('/')
+        }
     }
     return (
         <Form {...form}>
