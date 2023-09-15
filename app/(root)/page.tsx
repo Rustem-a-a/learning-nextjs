@@ -4,7 +4,6 @@ import ThreadCard from "@/components/cards/ThreadCard";
 
 export default async function Home() {
     const result = await fetchPosts(1,30)
-    console.log(result.posts)
     const user = await currentUser()
     return (
         <div>
@@ -17,17 +16,19 @@ export default async function Home() {
                     : (
                         <>
                             {result.posts.map((post) => (
-                                <ThreadCard
+                               !post.parentId && <ThreadCard
                                 key ={post._id}
-                                id ={post._id}
-                                currentUserId = {user?.id || ""}
-                                parentId = {post.parentId}
-                                content = {post.text}
-                                author = {post.author}
-                                community = {post.comunity}
-                                createdAt = {post.createdAt}
-                                comments = {post.children}
-                                />
+                            id ={post._id}
+                            currentUserId = {user?.id || ""}
+                            parentId = {post.parentId}
+                            content = {post.text}
+                            author = {post.author}
+                            community = {post.comunity}
+                            createdAt = {post.createdAt}
+                            comments = {post.children}
+                        />
+
+
                             ))}
                         </>
                     )
