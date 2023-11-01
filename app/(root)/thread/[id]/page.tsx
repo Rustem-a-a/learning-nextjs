@@ -16,7 +16,7 @@ async function Page({params} : {params:{id:string}}) {
     if(!userInfo?.onboarded) redirect('/onboaring')
 
     const thread = await fetchThreadById(params.id)
-    console.log(thread)
+    if(!thread){ return }//////////My comment
 
     return (
         <section className="relative">
